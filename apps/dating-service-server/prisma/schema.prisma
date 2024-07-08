@@ -1,0 +1,66 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Match {
+  id           String    @id @default(cuid())
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  matchDate    DateTime?
+  userProfile1 String?
+  userProfile2 String?
+}
+
+model UserProfile {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  firstName String?
+  lastName  String?
+  photos    Json?
+  bio       String?
+  age       Int?
+  gender    String?
+  location  String?
+  swipes    Swipe[]
+}
+
+model Swipe {
+  id            String              @id @default(cuid())
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  direction     EnumSwipeDirection?
+  userProfile   UserProfile?        @relation(fields: [userProfileId], references: [id])
+  userProfileId String?
+}
+
+model Message {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  toUser      String?
+  messageBody String?
+  timestamp   DateTime?
+  fromUser    String?
+}
+
+model User {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  firstName String?
+  lastName  String?
+  username  String   @unique
+  email     String?  @unique
+  password  String
+  roles     Json
+}
+
+enum EnumSwipeDirection {
+  Option1
+}
